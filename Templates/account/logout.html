@@ -1,0 +1,30 @@
+{% extends "base/_base.html" %}
+{% load allauth i18n %}
+{% block head_title %}
+    {% trans "Sign Out" %}
+{% endblock head_title %}
+{% block content %}
+<div class="container mt-5 mb-5 pb-4"> <!-- Balanced spacing -->
+    <div class="card mx-auto shadow" style="max-width: 500px; border-radius: 10px; min-height: 250px;"> <!-- Styled card -->
+        <div class="card-body">
+            <h1 class="text-center text-danger">
+                {% trans "Sign Out" %}
+            </h1>
+            <p class="text-center text-muted">
+                {% trans 'Are you sure you want to sign out?' %}
+            </p>
+            {% url 'account_logout' as action_url %}
+            <form method="post" action="{{ action_url }}" class="text-center">
+                {% csrf_token %}
+                {{ redirect_field }}
+                <button type="submit" class="btn btn-warning mt-3">
+                    {% trans 'Sign Out' %}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<footer class="fixed-bottom bg-light text-center py-3"> <!-- Footer anchored at the bottom -->
+    <p class="text-muted">© 2025 Your Company</p>
+</footer>
+{% endblock content %}
