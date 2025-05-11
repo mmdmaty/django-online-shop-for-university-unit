@@ -1,0 +1,10 @@
+<form method="post" action="{% url "cart__add_to_cart" %}">
+    {% csrf_token %}
+    
+        <input type="hidden" class="quantity-input" name="quantity" id="qty" value="1">
+        <!-- Hidden input to send variant id -->
+        <input type="hidden" name="variant_id" id="variant-id-input" value="{{ product.default_variant.id }}">
+
+        <button type="submit" class="btn btn-small btn-bg-sand btn-color-dark px-3">اضافه کردن به سبد خرید</button>
+
+</form>

@@ -93,7 +93,7 @@ class WishListView(generic.ListView):
     context_object_name = 'wish'
 
     def get_queryset(self):
-        return models.WishList.objects.filter(customer__user = self.request.user).select_related('product').prefetch_related('product__discounts','product__image')
+        return models.WishList.objects.filter(customer__user = self.request.user).select_related('product')
 
 
 def remove_from_wishlist(request,slug):
@@ -125,7 +125,7 @@ def Order_accept(request):
             order.save()
             for item in cart:
                 order_item = models.OrderItem()
-                order_item.product = item['product_obj']
+                order_item.product_variant = item['product_obj']
                 order_item.order = order
                 order_item.price = item['product_obj'].price
                 order_item.quantity = item['quantity']
@@ -145,7 +145,7 @@ def add_address(request):
         if form.is_valid():
             address = form.save(commit=False)
             address.customer = customer
-            address.is_default = True if customer.addresses else False 
+            address.is_default = False if customer.addresses.exists() else True 
             address.save()
             return redirect('check_out')
     return render(request=request,template_name='store/add_address.html',context={'form':form})

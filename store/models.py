@@ -221,8 +221,8 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(
-        Product,
+    product_variant = models.ForeignKey(
+        ProductVariant,
         on_delete=models.PROTECT,
         related_name='order_items',
         verbose_name=_('product'))
@@ -238,12 +238,12 @@ class OrderItem(models.Model):
     )
 
     class Meta:
-        unique_together = [['order', 'product']]
+        unique_together = [['order', 'product_variant']]
         verbose_name = _('order item')
         verbose_name_plural = _('order items')
 
     def __str__(self):
-        return f"{self.quantity}x {self.product.name}"
+        return f"{self.quantity}x {self.product_variant.product.name}"
 
 
 class Comment(models.Model):

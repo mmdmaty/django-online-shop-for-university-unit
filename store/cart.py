@@ -30,10 +30,10 @@ class Cart():
     def update_cart(self):
         self.session.modified = True
 
-    # def delete_item_form_cart(self, product):
-    #     product_id = str(product.id)
-    #     del self.cart[product_id]
-    #     self.update_cart()
+    def delete_item_form_cart(self, product):
+        product_id = str(product.id)
+        del self.cart[product_id]
+        self.update_cart()
 
     def clean_cart(self):
         del self.session['cart']

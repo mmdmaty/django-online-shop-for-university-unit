@@ -56,31 +56,26 @@
                   <span class="money text-success">{{ item.product.get_discounted_price }}$</span>
                   <span class="money-separator">-</span>
                   <span class="old-price text-danger">
-                    <span class="money text-danger">{{ item.product.price|make_price }}$</span>
+                    <span class="money text-danger">{{ item.product.default_variant.price|make_price }}$</span>
                   </span>
                 </div>
                 {% else %}
                 <div class="product-price-wrapper mb-3 text-center"> <!-- اینم وسط چین -->
-                  <span class="money text-success">{{ item.product.price|make_price }}$</span>
+                  <span class="money text-success">{{ item.product.default_variant.price|make_price }}$</span>
                 </div>
                 {% endif %}
     
                 <div class="mt-auto">
-                    <form method="post" class="update-quantity-form" action='{% url "cart__add_to_cart" item.product.slug %}'>
-                        {% csrf_token %}
-
-
-                            <input 
-                                type="hidden" 
-                                id="qty" 
-                                name='quantity'
-                                value="1" 
-                            >
-                        <input type="hidden" id="inplce" name="inplce" value="True">
-                        <button type='submit' class="btn btn-success w-100 mb-2">افزودن به سبد 🛒</button>
-                        
-                        
-                    </form>
+                  <form method="post" action="{% url "cart__add_to_cart" %}">
+                    {% csrf_token %}
+                    
+                        <input type="hidden" class="quantity-input" name="quantity" id="qty" value="1">
+                        <!-- Hidden input to send variant id -->
+                        <input type="hidden" name="variant_id" id="variant-id-input" value="{{ item.product.default_variant.id }}">
+                
+                        <button type="submit" class="btn btn-small btn-bg-sand btn-color-dark px-3">اضافه کردن به سبد خرید</button>
+                
+                </form>
                   <a href='{% url "remove_form_wish_list" item.product.slug%}' class="btn btn-outline-danger w-100">حذف 🗑️</a>
                 </div>
             </div>
