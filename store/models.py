@@ -123,10 +123,16 @@ class Product(models.Model):
 class Attribute(models.Model):
     name = models.CharField(max_length=256)
 
+    def __str__(self):
+        return f"{self.name}"
+
 class AttributeValue(models.Model):
     attribute = models.ForeignKey(to=Attribute,on_delete=models.PROTECT)
     value = models.CharField(max_length=150)
     unit = models.CharField(max_length=150,blank=True)
+
+    def __str__(self):
+        return f"{self.attribute.name}-{self.value}"
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(to=Product,on_delete=models.PROTECT)

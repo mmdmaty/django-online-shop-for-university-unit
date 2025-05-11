@@ -38,4 +38,3 @@ class CustomSignUpFrom(SignupForm):
         user.save()
         return user
     
-
