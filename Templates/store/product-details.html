@@ -34,7 +34,24 @@
             <div class="container">
                 <div class="row no-gutters mb--80">
                     <div class="col-12 col-sm-4 product-main-image d-flex align-content-center">
-                        <img class="m-auto" style="max-height: 400px;" id="product-image" src="{{ product.default_variant.image.url }}" alt="{{ product.name }}">
+                                                    {% if product.image.all %}
+                            <div class="swiper mySwiper" style="max-width: 400px; margin: auto;">
+                                <div class="swiper-wrapper">
+                                    {% for img in product.image.all %}
+                                        <div class="swiper-slide">
+                                            <!-- لینک لایت‌باکس -->
+                                            <a href="{{ img.image.url }}" class="glightbox">
+                                                <img src="{{ img.image.url }}" alt="عکس محصول" style="width: 100%; border-radius: 8px;">
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- دایره‌های پایین -->
+                                <div class="swiper-pagination"></div>
+                            </div>
+                        {% else %}
+                            <p>هیچ عکسی برای این محصول ثبت نشده است.</p>
+                        {% endif %}
                     </div>
                     <div class="col-12 col-sm-8 product-main-details mt-md--50">
                         <div class="product-summary pl-lg--30 pl-md--0 text-right p-4">
@@ -117,7 +134,7 @@
                                     <span>ویژگی ها</span>
                                 </a>
                                 <a class="m-0 product-data-tab__link nav-link" id="nav-reviews-tab" data-toggle="tab" href="#nav-reviews" role="tab" aria-selected="true">
-                                    <span>نظرات (۱)</span>
+                                    <span>نظرات ({{comments|length}})</span>
                                 </a>
                             </div>
                             <div class="tab-content product-data-tab__content" id="product-tabContent">
@@ -158,66 +175,70 @@
                                 </div>
                                 <div class="tab-pane fade" id="nav-reviews" role="tabpanel" aria-labelledby="nav-reviews-tab">
                                     <div class="product-reviews">
-                                        <h3 class="review__title">۱ نظر برای لباس تابستانی</h3>
-                                        <ul class="review__list">
-                                            <li class="review__item">
-                                                <div class="review__container">
-                                                    <div class="review__text">
-                                                        <div class="d-flex flex-sm-row flex-row">
-                                                            <img src="assets/img/others/comment-1.jpg" alt="Review Avatar" class="review__avatar">
-                                                            <div>
+                                        <h3 class="review__title">{{comments|length}} نظر برای {{product.name}}</h3>
+                                            <ul class="review__list">
+                                                <li class="review__item">
+                                                    <div class="review__container">
+                                                        {% for comment in comments %}
+                                                        <div class="review__text">
+                                                            <div class="d-flex flex-column">
                                                                 <div class="review__meta">
-                                                                    <strong class="review__author px-4">علی علوی</strong>
+                                                                    <strong class="review__author">{{ comment.customer.user.username }}</strong>
                                                                     <span class="review__dash">-</span>
-                                                                    <span class="review__published-date">۱۲ مرداد ۱۴۰۱</span>
+                                                                    <span class="review__published-date">{{ comment.datetime_created }}</span>
                                                                 </div>
+                                                                
+                                                                <!-- سیستم ستاره‌ای حرفه‌ای -->
                                                                 <div class="product-rating">
-                                                                    <div class="m-0 star-rating star-five">
-                                                                        <span>Rated <strong class="rating">5.00</strong> out of 5</span>
+                                                                    <div class="stars-outer">
+                                                                        <div class="stars-inner" style="width: calc({{ comment.rating }} / 5 * 100%)"></div>
                                                                     </div>
+                                                                    <span class="rating-text">امتیاز: {{ comment.rating }} از ۵</span>
                                                                 </div>
+                                                                
+                                                                
+                                                                <p class="review__description">
+                                                                    {{ comment.body }}
+                                                                </p>
                                                             </div>
                                                         </div>
-                                                        <p class="review__description text-right px-4">
-                                                            از خرید خودم راضی هستم. واقعا خیلی خوب بسته بندی شده بود و همینطور سر زمان رسید. واقعا نسبت به قیمت خیلی می ارزه.
-                                                        </p>
+                                                        {% endfor %}
+                                                        
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        <div class="review-form-wrapper">
+                                                <div class="row">
+                                                    <div class="border-top py-5 w-100"></div>
+                                                    <div class="col-lg-8 m-auto">
+                                                        <span class="reply-title pull-right">نظر خود را بنویسید</span>
+                                                        <br>
+                                                        <form method="post" class="comment-form">
+                                                            {% csrf_token %}
+                                                        
+                                                            <!-- فیلد متن نظر -->
+                                                            <div class="form-group">
+                                                                <label for="id_body">متن نظر شما:</label>
+                                                                <textarea name="body" id="id_body" rows="4" class="form-control" placeholder="نظر خود را بنویسید..."></textarea>
+                                                            </div>
+                                                        
+                                                            <!-- فیلد امتیاز (ستاره‌ای) -->
+                                                            <div class="form-group rating-stars">
+                                                                <label>امتیاز شما:</label>
+                                                                <div class="stars">
+                                                                    {% for i in "12345" %}
+                                                                        <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}">
+                                                                        <label for="star{{ i }}">&#9733;</label>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        
+                                                            <button type="submit" class="btn btn-primary">ثبت نظر</button>
+                                                        </form>
+                                                        
                                                     </div>
                                                 </div>
-                                            </li>
-                                        </ul>
-                                        <div class="review-form-wrapper">
-                                            <div class="row">
-                                                <div class="border-top py-5 w-100"></div>
-                                                <div class="col-lg-8 m-auto">
-                                                    <span class="reply-title pull-right">نظر خود را بنویسید</span>
-                                                    <br>
-                                                    <form action="#" class="form text-right">
-                                                        <div class="form-notes mb--20">
-                                                            <p class="my-3"><span class="required">*</span>ایمیل شما برای دیگران نشان داده نمیشود.</p>
-                                                        </div>
-                                                        <div class="form__group mb--10">
-                                                            <label class="form__label d-block" for="email">متن نظر شما<span class="required">*</span></label>
-                                                            <textarea name="review" id="review" class="form__input form__input--textarea"></textarea>
-                                                        </div>
-                                                        <div class="form__group mb--20">
-                                                            <label class="form__label d-block" for="name">نام شما<span class="required">*</span></label>
-                                                            <input type="text" name="name" id="name" class="form__input">
-                                                        </div>
-                                                        <div class="form__group mb--20">
-                                                            <label class="form__label d-block" for="email">ایمیل شما<span class="required">*</span></label>
-                                                            <input type="email" name="email" id="email" class="form__input">
-                                                        </div>
-                                                        <div class="form__group">
-                                                            <div class="form-row">
-                                                                <div class="col-12">
-                                                                    <input type="submit" value="ارسال" class="btn-submit">
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

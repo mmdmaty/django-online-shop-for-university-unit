@@ -52,11 +52,13 @@
                                                     </a>
                                                 </td>
                                                 <td class="product-thumbnail text-left">
-                                                    {% if item.product_obj.image.first %}
-                                                        <img src="{{ item.product_obj.image.first.image.url }}" alt="Product Thumbnail">
-                                                    {% else %}
-                                                        <img src="{% static 'img/products/prod-10-70x88.jpg' %}" alt="Product Thumbnail">
-                                                    {% endif %}
+                                                        <a href="{% url "product_details" item.product_obj.product.slug %}">
+                                                            {% if item.product_obj.product.image.all %}
+                                                            <img src="{{ item.product_obj.product.image.first.image.url }}" alt="{{ item.product_obj.product.name }}" style="height: 100%; width: auto; max-width: 100%;">
+                                                        {% else %}
+                                                            <img src="/static/images/no-image.png" alt="no image" style="height: 100%; width: auto; max-width: 100%;">
+                                                        {% endif %}
+                                                        </a>
                                                 </td>
                                                 <td class="product-name wide-column">
                                                     <h3>

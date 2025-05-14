@@ -27,20 +27,40 @@ class ProductListView(generic.ListView):
             return models.Product.objects.filter(category__name=self.request.GET.get('category'))
         return super().get_queryset()
 
-# class ProductDetailViews(generic.DetailView):
-#     model = models.Product
-#     template_name = 'store/product-details.html'
-#     context_object_name = 'product'
+class ProductDetailViews(generic.DetailView):
+    model = models.Product
+    template_name = 'store/product-details.html'
+    context_object_name = 'product'
 
-def product_detail(request, slug):
-    product = get_object_or_404(models.Product, slug=slug)
-    variants = product.productvariant_set.all()  # همه واریانت‌های محصول
-    context = {
-        'product': product,
-        'variants': variants,
-        'default_variant': product.default_variant,
-    }
-    return render(request, 'store/product-details.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['variants'] = context['product'].productvariant_set.all()
+        context['default_variant'] = context['product'].default_variant
+        context['comments'] = context['product'].comments.filter(status = models.Comment.COMMENT_STATUS_APPROVED)
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        product = self.get_object()
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            customer = get_object_or_404(models.Customer,user = user)
+            form = forms.Comments(self.request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.product = product
+                comment.customer = customer
+                comment.save()
+        return redirect('product_details',slug = product.slug)
+
+# def product_detail(request, slug):
+#     product = get_object_or_404(models.Product, slug=slug)
+#     variants = product.productvariant_set.all()  # همه واریانت‌های محصول
+#     context = {
+#         'product': product,
+#         'variants': variants,
+#         'default_variant': product.default_variant,
+#     }
+#     return render(request, 'store/product-details.html', context)
 
 
 def add_to_cart_views(request: HttpRequest):
