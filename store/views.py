@@ -151,7 +151,7 @@ def Order_accept(request):
                 order_item.quantity = item['quantity']
                 order_item.save()
             cart.clean_cart()
-        return HttpResponse('created')
+            return redirect('payment')
 
 
 
@@ -169,3 +169,23 @@ def add_address(request):
             address.save()
             return redirect('check_out')
     return render(request=request,template_name='store/add_address.html',context={'form':form})
+
+def payment(request):
+    if request.method == "POST":
+        customer = models.Customer.objects.filter(user = request.user)
+        Order = models.Order.objects.get(customer = customer)
+        Order.status = models.Order.ORDER_STATUS_COMPLETED
+        Order.save()
+    return redirect('order_show')
+
+def Order_show(request):
+    order = models.Order.objects.filter(customer=models.Customer.objects.get(user=request.user)).first()  # یا هر فیلتر دیگه‌ای که داری
+
+    order_items = order.items.all()  # اگه related_name='items' تعریف کردی
+    # یا:
+    # order_items = order.orderitem_set.all()  # اگه related_name نداری
+
+    return render(request, 'store/order_show.html', {
+        'order': order,
+        'order_items': order_items
+    })

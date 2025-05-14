@@ -59,3 +59,5 @@ class Comments(ModelForm):
     class Meta:
         model = models.Comment
         fields = ['body','rating',]
+
+

@@ -79,13 +79,46 @@
                                 </div>
                             </div>
                             <nav class="pagination-wrap mt--35 mt-md--25 pb-5">
-                                <ul class="pagination">
-                                    <li><a href="#" class="next page-number"><i class="fa fa-angle-double-right"></i></a></li>
-                                    <li><span class="current page-number">1</span></li>
-                                    <li><a href="#" class="page-number">2</a></li>
-                                    <li><a href="#" class="page-number">3</a></li>
-                                    <li><a href="#" class="prev page-number"><i class="fa fa-angle-double-left"></i></a></li>
-                                </ul>
+<ul class="pagination">
+
+    <!-- قبلی -->
+    {% if page_obj.has_previous %}
+        <li>
+            <a href="?page={{ page_obj.previous_page_number }}" class="prev page-number">
+                <i class="fa fa-angle-double-left"></i>
+            </a>
+        </li>
+    {% else %}
+        <li class="disabled">
+            <span class="page-number"><i class="fa fa-angle-double-left"></i></span>
+        </li>
+    {% endif %}
+
+    <!-- شماره صفحات -->
+    {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+            <li><span class="current page-number">{{ num }}</span></li>
+        {% else %}
+            <li><a href="?page={{ num }}" class="page-number">{{ num }}</a></li>
+        {% endif %}
+    {% endfor %}
+
+    <!-- بعدی -->
+    {% if page_obj.has_next %}
+        <li>
+            <a href="?page={{ page_obj.next_page_number }}" class="next page-number">
+                <i class="fa fa-angle-double-right"></i>
+            </a>
+        </li>
+    {% else %}
+        <li class="disabled">
+            <span class="page-number"><i class="fa fa-angle-double-right"></i></span>
+        </li>
+    {% endif %}
+
+</ul>
+
+
                             </nav>
                         </div>
                     </div>

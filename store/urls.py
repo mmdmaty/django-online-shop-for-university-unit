@@ -14,4 +14,6 @@ urlpatterns = [
     path(route='remove_itme_from_wish_list/<slug:slug>',view=views.remove_from_wishlist,name='remove_form_wish_list'),
     path(route='check_out/',view=views.Order_accept,name='check_out'),
     path(route='add_address/',view=views.add_address,name='add_address'),
+    path(route='order_show/',view=views.Order_show,name='order_show'),
+    path(route='payment/',view=views.payment,name='payment'),
 ]

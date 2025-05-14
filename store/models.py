@@ -218,6 +218,13 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.customer}"
+    
+    def get_order_total_price(self):
+        total_price = 0
+        for item in self.items.all():
+            total_price+= item.get_total_pricee()
+        return total_price
+
 
 
 class OrderItem(models.Model):
@@ -244,6 +251,9 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.product_variant.product.name}"
+    
+    def get_total_pricee(self):
+        return self.quantity*self.price
 
 
 class Comment(models.Model):
