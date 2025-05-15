@@ -1,0 +1,12 @@
+{% extends "base/_base.html" %}
+{% load static %}
+{% load i18n %}
+{% load price_tags %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">paied</button>
+</form>
+{% endblock %}

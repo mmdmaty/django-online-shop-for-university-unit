@@ -129,20 +129,22 @@ from django.http import HttpResponse
 def Order_accept(request):
     cart = Cart(request=request)
     user = request.user
-    customer = get_object_or_404(models.Customer,user = user)
+    customer = get_object_or_404(models.Customer, user=user)
+    
     if request.method == 'GET':
-
-        form = forms.OrderForm(customer = customer)
+        form = forms.OrderForm(customer=customer)
         default_address = models.Address.objects.filter(customer=customer, is_default=True).first()
-        return render(request=request,template_name='store/checkout.html',context={'form':form,'default_address':default_address})
+        return render(request=request, template_name='store/checkout.html', context={'form': form, 'default_address': default_address})
     else:
-        form = forms.OrderForm(data=request.POST,customer = customer)
+        form = forms.OrderForm(data=request.POST, customer=customer)
         if form.is_valid():
             order = form.save(commit=False)
             order.customer = customer
             order.postal_code = order.shipping_address.postal_code
             order.total_price = cart.cart_total_price_with_discount()
             order.save()
+            
+            # Creating Order Items
             for item in cart:
                 order_item = models.OrderItem()
                 order_item.product_variant = item['product_obj']
@@ -150,8 +152,15 @@ def Order_accept(request):
                 order_item.price = item['product_obj'].price
                 order_item.quantity = item['quantity']
                 order_item.save()
+                
             cart.clean_cart()
-            return redirect('payment')
+            
+            # Redirection after order creation
+            return redirect('payment')  # Adjust the URL to your payment page
+        else:
+            # If form is not valid, render the form again with error messages
+            return render(request, 'store/checkout.html', {'form': form, 'default_address': default_address})
+
 
 
 
@@ -172,11 +181,19 @@ def add_address(request):
 
 def payment(request):
     if request.method == "POST":
-        customer = models.Customer.objects.filter(user = request.user)
-        Order = models.Order.objects.get(customer = customer)
-        Order.status = models.Order.ORDER_STATUS_COMPLETED
-        Order.save()
-    return redirect('order_show')
+        form = forms.PaymentForm(request.POST)
+        if form.is_valid():
+            print('00000000000000000000000000000000')
+            customer = models.Customer.objects.get(user=request.user)
+            order = models.Order.objects.filter(customer=customer).first()
+            if order:
+                order.status = models.Order.ORDER_STATUS_COMPLETED
+                order.save()
+            return redirect('order_show')
+    else:
+        form = forms.PaymentForm()
+        return render(request, 'store/payment.html', {'form': form})
+
 
 def Order_show(request):
     order = models.Order.objects.filter(customer=models.Customer.objects.get(user=request.user)).first()  # یا هر فیلتر دیگه‌ای که داری

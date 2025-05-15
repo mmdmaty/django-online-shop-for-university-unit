@@ -61,3 +61,9 @@ class Comments(ModelForm):
         fields = ['body','rating',]
 
 
+class PaymentForm(Form):
+    paied = forms.BooleanField(widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['paied'].initial = True
