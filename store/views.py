@@ -144,6 +144,7 @@ def Order_accept(request):
             order.total_price = cart.cart_total_price_with_discount()
             order.save()
             
+            
             # Creating Order Items
             for item in cart:
                 order_item = models.OrderItem()
@@ -156,7 +157,7 @@ def Order_accept(request):
             cart.clean_cart()
             
             # Redirection after order creation
-            return redirect('payment')  # Adjust the URL to your payment page
+            return redirect('payment',order_id=order.id)  # Adjust the URL to your payment page
         else:
             # If form is not valid, render the form again with error messages
             return render(request, 'store/checkout.html', {'form': form, 'default_address': default_address})
@@ -179,30 +180,43 @@ def add_address(request):
             return redirect('check_out')
     return render(request=request,template_name='store/add_address.html',context={'form':form})
 
-def payment(request):
+def payment(request,order_id):
     if request.method == "POST":
         form = forms.PaymentForm(request.POST)
         if form.is_valid():
-            print('00000000000000000000000000000000')
+            
             customer = models.Customer.objects.get(user=request.user)
-            order = models.Order.objects.filter(customer=customer).first()
+            order = models.Order.objects.get(id = order_id,customer=customer)
             if order:
                 order.status = models.Order.ORDER_STATUS_COMPLETED
                 order.save()
-            return redirect('order_show')
+            return redirect('order_show',pk= order_id)
     else:
         form = forms.PaymentForm()
         return render(request, 'store/payment.html', {'form': form})
 
 
-def Order_show(request):
-    order = models.Order.objects.filter(customer=models.Customer.objects.get(user=request.user)).first()  # یا هر فیلتر دیگه‌ای که داری
+# def Order_show(request,**kwargs):
+#     if kwargs.get('pk'):
+#         pass
+#     else:
+#         order = models.Order.objects.filter(customer=models.Customer.objects.get(user=request.user)).first()  # یا هر فیلتر دیگه‌ای که داری
 
-    order_items = order.items.all()  # اگه related_name='items' تعریف کردی
-    # یا:
-    # order_items = order.orderitem_set.all()  # اگه related_name نداری
+#         order_items = order.items.all()  # اگه related_name='items' تعریف کردی
+#     # یا:
+#     # order_items = order.orderitem_set.all()  # اگه related_name نداری
 
-    return render(request, 'store/order_show.html', {
-        'order': order,
-        'order_items': order_items
-    })
+#     return render(request, 'store/order_show.html', {
+#         'order': order,
+#         'order_items': order_items
+#     })
+class OrderDitails(generic.DeleteView):
+    model = models.Order
+    template_name = 'store/order_show.html'
+    context_object_name = 'order'
+    def get_queryset(self):
+        return models.Order.objects.filter(id = self.kwargs.get('pk'),customer = models.Customer.objects.get(user = self.request.user))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order_items'] = self.get_object().items.all()
+        return context

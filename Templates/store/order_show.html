@@ -15,7 +15,7 @@
                     </div>
                     <div class="card-body">
                         <p><strong>کد سفارش:</strong> {{ order.id }}</p>
-                        <p><strong>تاریخ سفارش:</strong> {{ order.created_at|date:"Y/m/d - H:i" }}</p>
+                        <p><strong>تاریخ سفارش:</strong> {{ order.date_time_modified|date:"Y/m/d - H:i" }}</p>
                         <p><strong>وضعیت:</strong> {{ order.get_status_display }}</p>
                         <p><strong>آدرس ارسال:</strong> {{ order.shipping_address }}</p>
                     </div>

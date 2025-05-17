@@ -52,7 +52,7 @@ class Address(models.Model):
         verbose_name_plural = _('addresses')
 
     def __str__(self):
-        return f"{self.address}, {self.city}"
+        return f"{self.city} , {self.address} , کدپستی: {self.postal_code}"
 
 
 class Category(MPTTModel):
@@ -224,6 +224,9 @@ class Order(models.Model):
         for item in self.items.all():
             total_price+= item.get_total_pricee()
         return total_price
+    
+
+    
 
 
 
