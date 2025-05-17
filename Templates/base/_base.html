@@ -280,16 +280,8 @@
                                             </ul>
                                         </li>
                                             
-                                        <li class="mainmenu__item menu-item-has-children">
-                                            <a href="Blog.html" class="mainmenu__link">
-                                                <span class="mm-text">وبلاگ</span>
-                                            </a>
-                                        </li>
-                                        <li class="mainmenu__item menu-item-has-children">
-                                            <a href="#" class="mainmenu__link">
-                                                <span class="mm-text">صفحات</span>
-                                            </a>
-                                        </li>
+
+
                                         <li class="mainmenu__item">
                                             <a href="contact-us.html" class="mainmenu__link">
                                                 <span class="mm-text">{% trans "call us" %}</span>
@@ -303,7 +295,7 @@
                         <div class="col-xl-3 col-lg-4 col-sm-7 col-12 p-0">
                             <ul class="header-toolbar">
                                 <li class="header-toolbar__item">
-                                    <a href="wishlist.html" class="header-toolbar__btn mx-4">
+                                    <a href="{% url "wish" %}" class="header-toolbar__btn mx-4">
                                         <i class="flaticon flaticon-like"></i>
                                     </a>
                                 </li>
@@ -371,7 +363,18 @@
         {% block content %}
         {% endblock content %}
 
-
+        <!-- Search form Popup Start -->
+        <div class="searchform__popup" id="searchForm">
+            <a href="#" class="btn-close"><i class="flaticon flaticon-cross"></i></a>
+            <div class="searchform__body">
+                <p>Start typing and press Enter to search</p>
+                <form class="searchform">
+                    <input type="text" name="popup-search" id="popup-search" class="searchform__input" placeholder="Search Entire Store...">
+                    <button type="submit" class="searchform__submit"><i class="flaticon flaticon-magnifying-glass-icon"></i></button>
+                </form>
+            </div>
+        </div>
+        <!-- Search form Popup End -->
         <footer class="footer-area bg-color ptb--60" data-bg-color="#f6f6f6" style="margin-top: auto; width: 100%;">
             <div class="container">
             <div class="row align-items-center">
@@ -586,7 +589,7 @@
                         const originalPrice = this.getAttribute('data-price');
                         
                         document.getElementById('discounted-price').textContent = 
-                            parseInt(discountedPrice).toLocaleString('fa-IR') + ' تومان';
+                            parseInt(discountedPrice).toLocaleString('en') + ' تومان';
                             
                         const originalPriceElement = document.getElementById('original-price');
                         if (discountedPrice !== originalPrice) {

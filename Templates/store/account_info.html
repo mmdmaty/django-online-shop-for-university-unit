@@ -54,7 +54,15 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            
+                                            {% for item in orders %}
+                                                <tr>
+                                                    <td>{{item.id}}</td>
+                                                    <td class="wide-column">{{item.date_time_created}}</td>
+                                                    <td>{{item.status}}</td>
+                                                    <td class="wide-column">{{item.get_order_total_price}}</td>
+                                                    <td><a href="{% url "order_show" item.id%}" class="btn btn-small btn-bg-red btn-color-white btn-hover-2">نمایش</a></td>
+                                                </tr>
+                                            {% endfor %}
 
                                         </tbody>
                                     </table>
@@ -73,23 +81,18 @@
                                             <tr>
                                                 <th>شماره</th>
                                                 <th>نام محصول</th>
-                                                <th>تاریخ علاقه مندی</th>
                                                 <th>عملیات</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>۱</td>
-                                                <td>پیراهن</td>
-                                                <td class="wide-column">۲ شهریور ۱۴۰۲</td>
-                                                <td><a href="product-details.html" class="btn btn-small btn-bg-red btn-color-white btn-hover-2">نمایش</a></td>
+                                            {% for wish in wishes %}
+                                                                                        <tr>
+                                                <td>{{wish.id}}</td>
+                                                <td>{{wish.product.name}}</td>
+                                                <td><a href="{% url "product_details" wish.product.slug %}" class="btn btn-small btn-bg-red btn-color-white btn-hover-2">نمایش</a></td>
                                             </tr>
-                                            <tr>
-                                                <td>۲</td>
-                                                <td>پیراهن ۲</td>
-                                                <td class="wide-column">۵ شهریور ۱۴۰۲</td>
-                                                <td><a href="product-details.html" class="btn btn-small btn-bg-red btn-color-white btn-hover-2">نمایش</a></td>
-                                            </tr>
+                                            {% endfor %}
+
                                         </tbody>
                                     </table>
                                 </div>

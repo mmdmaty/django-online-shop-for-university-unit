@@ -28,12 +28,27 @@ class UserUpdateForm(forms.ModelForm):
 from allauth.account.forms import SignupForm
 from phonenumber_field.formfields import PhoneNumberField
 
-class CustomSignUpFrom(SignupForm):
+class CustomSignupForm(SignupForm):
+    first_name = forms.CharField(
+        max_length=30,
+        label='نام*',
+        required=True,
+        help_text='نام خود را وارد کنید.'
+    )
+
+    last_name = forms.CharField(
+        max_length=30,
+        label='نام خانوادگی',
+        required=True,
+        help_text='نام خانوادگی خود را وارد کنید.'
+    )
+    email = forms.EmailField(label='ایمیل*')
     phone_number = PhoneNumberField(region="IR", label='شماره موبایل', required=True)
 
     def save(self, request):
         user = super().save(request)
-        # ذخیره شماره موبایل برای کاربر
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
         user.phone_number = self.cleaned_data['phone_number']
         user.save()
         return user

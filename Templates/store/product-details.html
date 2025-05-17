@@ -1,4 +1,5 @@
 {% extends "base/_base.html" %}
+{% load price_tags %}
 {% block content %}
 
 <!-- Preloader Start -->
@@ -84,12 +85,12 @@
                                 
                                 <div class="my-5 py-5 product-price-wrapper mb--25">
                                     <span class="money text-success" id="discounted-price">
-                                        {{ product.default_variant.get_discounted_price|floatformat:0 }} تومان
+                                        {{ product.default_variant.get_discounted_price|make_price }} تومان
                                     </span>
                                     {% if product.default_variant.get_discounted_price != product.default_variant.price %}
                                         <span class="price-separator">-</span>
                                         <span class="money old-price text-danger" id="original-price">
-                                            {{ product.default_variant.price|floatformat:0 }} تومان
+                                            {{ product.default_variant.price|make_price}} تومان
                                         </span>
                                     {% endif %}
                                 </div>

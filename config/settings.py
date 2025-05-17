@@ -220,10 +220,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'phone_number', 'password1', 'password2']
+ACCOUNT_SIGNUP_FIELDS = ['first_name', 'last_name', 'email*', 'phone_number', 'password1', 'password2']
+
+
 ACCOUNT_UNIQUE_EMAIL = True
 
-ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignUpFrom'}
+ACCOUNT_FORMS: dict[str, str] = {
+    'signup': 'accounts.forms.CustomSignupForm',
+}
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 SOCIALACCOUNT_AUTO_SIGNUP = False

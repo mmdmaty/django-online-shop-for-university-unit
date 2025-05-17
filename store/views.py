@@ -52,15 +52,7 @@ class ProductDetailViews(generic.DetailView):
                 comment.save()
         return redirect('product_details',slug = product.slug)
 
-# def product_detail(request, slug):
-#     product = get_object_or_404(models.Product, slug=slug)
-#     variants = product.productvariant_set.all()  # همه واریانت‌های محصول
-#     context = {
-#         'product': product,
-#         'variants': variants,
-#         'default_variant': product.default_variant,
-#     }
-#     return render(request, 'store/product-details.html', context)
+
 
 
 def add_to_cart_views(request: HttpRequest):
@@ -70,8 +62,6 @@ def add_to_cart_views(request: HttpRequest):
         print(request.POST)
         form = forms.AddCartForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
-            # print('ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt')
             quantity = form.cleaned_data.get('quantity')
             product_variant_id = form.cleaned_data.get('variant_id')
             product_variant = models.ProductVariant.objects.get(id = product_variant_id)
@@ -155,11 +145,8 @@ def Order_accept(request):
                 order_item.save()
                 
             cart.clean_cart()
-            
-            # Redirection after order creation
-            return redirect('payment',order_id=order.id)  # Adjust the URL to your payment page
+            return redirect('payment',order_id=order.id)
         else:
-            # If form is not valid, render the form again with error messages
             return render(request, 'store/checkout.html', {'form': form, 'default_address': default_address})
 
 
@@ -196,20 +183,6 @@ def payment(request,order_id):
         return render(request, 'store/payment.html', {'form': form})
 
 
-# def Order_show(request,**kwargs):
-#     if kwargs.get('pk'):
-#         pass
-#     else:
-#         order = models.Order.objects.filter(customer=models.Customer.objects.get(user=request.user)).first()  # یا هر فیلتر دیگه‌ای که داری
-
-#         order_items = order.items.all()  # اگه related_name='items' تعریف کردی
-#     # یا:
-#     # order_items = order.orderitem_set.all()  # اگه related_name نداری
-
-#     return render(request, 'store/order_show.html', {
-#         'order': order,
-#         'order_items': order_items
-#     })
 class OrderDitails(generic.DeleteView):
     model = models.Order
     template_name = 'store/order_show.html'
@@ -220,3 +193,6 @@ class OrderDitails(generic.DeleteView):
         context = super().get_context_data(**kwargs)
         context['order_items'] = self.get_object().items.all()
         return context
+    
+def contact_us(request):
+    return render(request=request,template_name='store/contact-us.html')

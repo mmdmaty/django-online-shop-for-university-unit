@@ -219,6 +219,7 @@ class Order(models.Model):
     def __str__(self):
         return f"Order #{self.id} - {self.customer}"
     
+    
     def get_order_total_price(self):
         total_price = 0
         for item in self.items.all():
