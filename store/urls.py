@@ -16,5 +16,6 @@ urlpatterns = [
     path(route='add_address/',view=views.add_address,name='add_address'),
     path(route='order_show/<int:pk>/',view=views.OrderDitails.as_view(),name='order_show'),
     path(route='payment/<int:order_id>/',view=views.payment,name='payment'),
-    path(route='contact_us',view=views.contact_us,name='contact_us')
+    path(route='contact_us',view=views.contact_us,name='contact_us'),
+    path(route='add_to_wish/<slug:slug>/',view=views.add_to_wish,name='add_to_wish')
 ]

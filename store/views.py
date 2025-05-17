@@ -196,3 +196,10 @@ class OrderDitails(generic.DeleteView):
     
 def contact_us(request):
     return render(request=request,template_name='store/contact-us.html')
+
+def add_to_wish(request,slug):
+    wish = models.WishList()
+    wish.customer = get_object_or_404(models.Customer,user = request.user)
+    wish.product = get_object_or_404(models.Product,slug = slug)
+    wish.save()
+    return redirect('product_details',slug = slug)
