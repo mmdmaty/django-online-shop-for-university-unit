@@ -17,5 +17,8 @@ urlpatterns = [
     path(route='order_show/<int:pk>/',view=views.OrderDitails.as_view(),name='order_show'),
     path(route='payment/<int:order_id>/',view=views.payment,name='payment'),
     path(route='contact_us',view=views.contact_us,name='contact_us'),
-    path(route='add_to_wish/<slug:slug>/',view=views.add_to_wish,name='add_to_wish')
+    path(route='add_to_wish/<slug:slug>/',view=views.add_to_wish,name='add_to_wish'),
+    # urls.py
+    path('live-search/', views.live_search, name='live_search'),
+
 ]

@@ -1,26 +1,22 @@
-<ul id="category-list">
+<ul>
     {% for category in categories %}
-        <li class="category-item">
-            {% if category.get_children %}
-                <span class="category-toggle" onclick="toggleSubcategories({{ category.id }}, this)">
-                    <span id="icon-{{ category.id }}" class="category-icon">&#9654;</span>
+        <li class="category-item" style="list-style:none; margin-bottom:5px;">
+            <span class="category-toggle" onclick="toggleSubcategories({{ category.id }}, this)" style="cursor:pointer; display: inline-flex; align-items: center;">
+                <span id="icon-{{ category.id }}" class="category-icon" style="display:inline-block; width: 15px; text-align:center; margin-right: 5px;">&#9654;</span>
+                <a href="#" onclick="event.preventDefault(); selectCategory('{{ category.name }}')" style="text-decoration:none; color: #333;">
                     {{ category.name }}
-                </span>
-                <ul class="subcategory-list" id="subcategory-{{ category.id }}" style="display:none;">
-                    {% for subcategory in category.get_children %}
-                        <li>
-                            <a href="#" onclick="event.preventDefault(); selectCategory('{{ subcategory.name }}')">
-                                {{ subcategory.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
+                </a>
+            </span>
+            {% if category.get_children %}
+                <ul class="subcategory-list" id="subcategory-{{ category.id }}" style="display:none; padding-left: 20px; margin-top: 3px;">
+                    {% include "partials/category_tree.html" with categories=category.get_children %}
                 </ul>
-            {% else %}
-                <span>{{ category.name }}</span>
             {% endif %}
         </li>
     {% endfor %}
 </ul>
+
+
 
 <script>
     function toggleSubcategories(categoryId, toggleElement) {

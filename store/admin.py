@@ -3,7 +3,7 @@ from .models import (
     Customer, Address, Category, Discount,
     Product, Attribute, AttributeValue,
     ProductVariant, ProductImages, Order,
-    OrderItem, Comment, WishList
+    OrderItem, Comment, WishList,ProductCommonAttributesValue
 )
 
 
@@ -18,7 +18,8 @@ class AddressAdmin(admin.ModelAdmin):
     list_display = ('customer', 'city', 'postal_code', 'is_default')
     list_filter = ('city', 'is_default')
     search_fields = ('address', 'postal_code', 'city')
-
+    
+admin.site.register(ProductCommonAttributesValue)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -63,7 +64,7 @@ class AttributeValueAdmin(admin.ModelAdmin):
 
 @admin.register(ProductVariant)
 class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ('product', 'price', 'inventory')
+    list_display = ('product__name', 'price', 'inventory')
     filter_horizontal = ('attributes', 'discount',)
 
 

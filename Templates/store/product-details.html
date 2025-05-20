@@ -57,9 +57,9 @@
                     <div class="col-12 col-sm-8 product-main-details mt-md--50">
                         <div class="product-summary pl-lg--30 pl-md--0 text-right p-4">
                             <h3 class="product-title mb--20">{{ product.name }}</h3>
-                            <p class="product-short-description mb--20">
+                            {% comment %} <p class="product-short-description mb--20">
                                 {{ product.discription }}
-                            </p>
+                            </p> {% endcomment %}
                             
                             <!-- بخش انتخاب واریانت -->
                             <form method="post" action="{% url "cart__add_to_cart" %}">
@@ -114,11 +114,8 @@
                             
                             <div class="product-footer-meta mt-5 pt-5">
                                 <p><span class="m-0">دسته بندی ها:</span>
-                                    <a href="shop.html">لباس</a>,
-                                    <a href="shop.html">تابستانی</a>,
-                                    <a href="shop.html">گرم</a>,
-                                    <a href="shop.html">زنانه</a>
-                                </p>
+                                    {% category_breadcrumb_links product.category as breadcrumb_html %}
+                                    <span>{{ breadcrumb_html|safe }}</span>
                             </div>
                         </div>
                     </div>
@@ -141,35 +138,50 @@
                             <div class="tab-content product-data-tab__content" id="product-tabContent">
                                 <div class="tab-pane fade show active" id="nav-description" role="tabpanel" aria-labelledby="nav-description-tab">
                                     <div class="product-description text-justify">
-                                        <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از
-                                            طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد،
-                                            تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی،
-                                            و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز،</p><p>
-                                            و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارس
-                                            ی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.</p>
+                                        <div class="description-box">
+    <span id="short-description">
+        {{ product.discription|truncatechars:100 }}
+    </span>
+    <span id="full-description" style="display: none;">
+        {{ product.discription|linebreaks  }}
+    </span>
+    <br>
+    <a href="#" id="toggle-description" onclick="toggleDescription(event)">نمایش بیشتر</a>
+</div>
+<script>
+    function toggleDescription(event) {
+        event.preventDefault();
+        const shortDesc = document.getElementById("short-description");
+        const fullDesc = document.getElementById("full-description");
+        const toggleLink = document.getElementById("toggle-description");
+
+        if (fullDesc.style.display === "none") {
+            shortDesc.style.display = "none";
+            fullDesc.style.display = "inline";
+            toggleLink.textContent = "نمایش کمتر";
+        } else {
+            shortDesc.style.display = "inline";
+            fullDesc.style.display = "none";
+            toggleLink.textContent = "نمایش بیشتر";
+        }
+    }
+</script>
+
+
                                     </div>
                                 </div>
                                 <div class="tab-pane text-right" id="nav-info" role="tabpanel" aria-labelledby="nav-info-tab">
                                     <div class="table-content table-responsive">
                                         <table class="table shop_attributes">
                                             <tbody>
-                                                <tr>
-                                                    <th>وزن</th>
-                                                    <td>۴۳۰ گرم</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>سایز</th>
-                                                    <td>XL</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>رنگ</th>
-                                                    <td>
-                                                        <a href="shop-sidebar.html">مشکی</a>,
-                                                        <a href="shop-sidebar.html">سبز</a>,
-                                                        <a href="shop-sidebar.html">قرمز</a>,
-                                                        <a href="shop-sidebar.html">نارنجی</a>,
-                                                    </td>
-                                                </tr>
+                                                {% for item in product.common_attributes.all %}
+                                                    <tr>
+                                                        <th>{{item.name}}</th>
+                                                        <td>{{item.value}} {{item.unit}}</td>
+                                                    </tr>
+                                                {% endfor %}
+
+
                                             </tbody>
                                         </table>
                                     </div>

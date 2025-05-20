@@ -118,7 +118,9 @@ class Product(models.Model):
     date_time_modified = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(to=Category,on_delete=models.PROTECT)
     discription = models.TextField()
-    default_variant = models.OneToOneField(to='ProductVariant',on_delete=models.PROTECT,related_name='+',null=True,blank=True)
+    default_variant = models.OneToOneField(to='ProductVariant',on_delete=models.CASCADE,related_name='+',null=True,blank=True)
+    def __str__(self):
+        return f"{self.name}"
 
 class Attribute(models.Model):
     name = models.CharField(max_length=256)
@@ -135,7 +137,7 @@ class AttributeValue(models.Model):
         return f"{self.attribute.name}-{self.value}"
 
 class ProductVariant(models.Model):
-    product = models.ForeignKey(to=Product,on_delete=models.PROTECT)
+    product = models.ForeignKey(to=Product,on_delete=models.CASCADE)
     attributes = models.ManyToManyField(to=AttributeValue)
     price = models.PositiveIntegerField()
     inventory = models.PositiveIntegerField()
@@ -143,7 +145,7 @@ class ProductVariant(models.Model):
 
 
     def __str__(self):
-        return f'{self.product.name} - {" - ".join(str(at.value) for at in self.attributes.all())}'
+        return f'{self.product.name}'
 
     def get_discounted_price(self):
         active_discounts = self.discount.all()  # اضافه کردن فیلتر برای تخفیف‌های فعال
@@ -161,7 +163,17 @@ class ProductVariant(models.Model):
         
         return round(discounted_price)  # بهتر است از round به جای int استفاده شود
 
-
+class CommonAttributes(models.Model):
+    name = models.CharField(max_length=150)
+    
+class ProductCommonAttributesValue(models.Model):
+    product = models.ForeignKey(to=Product,on_delete=models.CASCADE,related_name='common_attributes')
+    name = models.CharField(max_length=150)
+    value = models.TextField()
+    unit = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f'{self.name}:{self.value} {self.unit}'
 
 class ProductImages(models.Model):
     product = models.ForeignKey(

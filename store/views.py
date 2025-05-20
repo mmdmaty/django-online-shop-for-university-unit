@@ -14,6 +14,8 @@ class ProductListView(generic.ListView):
     context_object_name = 'products'
     paginate_by = 10
 
+    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -23,8 +25,18 @@ class ProductListView(generic.ListView):
         return context
 
     def get_queryset(self):
-        if self.request.GET.get('category') is not None:
-            return models.Product.objects.filter(category__name=self.request.GET.get('category'))
+        category_name = self.request.GET.get('category')
+        if category_name:
+            try:
+                # دسته والد
+                category = models.Category.objects.get(name=category_name)
+
+                # همه دسته‌های زیرمجموعه (خودش + فرزندان و نوه‌ها)
+                all_categories = category.get_descendants(include_self=True)
+
+                return models.Product.objects.filter(category__in=all_categories)
+            except models.Category.DoesNotExist:
+                return models.Product.objects.none()  # اگر دسته‌ای با این اسم نبود، چیزی نشون نده
         return super().get_queryset()
 
 class ProductDetailViews(generic.DetailView):
@@ -203,3 +215,17 @@ def add_to_wish(request,slug):
     wish.product = get_object_or_404(models.Product,slug = slug)
     wish.save()
     return redirect('product_details',slug = slug)
+
+
+# views.py
+from django.http import JsonResponse
+from .models import Product
+
+def live_search(request):
+    q = request.GET.get('q', '')
+    results = []
+    if q:
+        for product in Product.objects.filter(name__icontains=q)[:10]:
+            results.append({'slug': product.slug, 'name': product.name})
+    return JsonResponse({'results': results})
+

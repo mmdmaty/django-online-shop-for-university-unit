@@ -368,10 +368,14 @@
             <a href="#" class="btn-close"><i class="flaticon flaticon-cross"></i></a>
             <div class="searchform__body">
                 <p>Start typing and press Enter to search</p>
-                <form class="searchform">
+                <form class="searchform" onsubmit="return false;">
                     <input type="text" name="popup-search" id="popup-search" class="searchform__input" placeholder="Search Entire Store...">
-                    <button type="submit" class="searchform__submit"><i class="flaticon flaticon-magnifying-glass-icon"></i></button>
+                    <div id="popup-search-results" style="display: none; background: white; border: 1px solid #ccc; max-height: 300px; overflow-y: auto; position: absolute; z-index: 1000; width: 100%; margin-top: 5px; border-radius: 5px;"></div>
+                    <button type="submit" class="searchform__submit">
+                        <i class="flaticon flaticon-magnifying-glass-icon"></i>
+                    </button>
                 </form>
+
             </div>
         </div>
         <!-- Search form Popup End -->
@@ -627,6 +631,36 @@
                 }
             });
             </script>
+<script>
+    const popupInput = document.getElementById("popup-search");
+    const resultBox = document.getElementById("popup-search-results");
+
+    popupInput.addEventListener("keyup", function () {
+        const query = this.value.trim();
+        if (query.length > 1) {
+            fetch(`/live-search/?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    resultBox.innerHTML = "";
+                    if (data.results.length > 0) {
+                        data.results.forEach(item => {
+                            const div = document.createElement("div");
+                            div.innerHTML = `<a href="/product/${item.slug}/" style="display: block; padding: 10px; text-decoration: none; color: black;">${item.name}</a>`;
+                            resultBox.appendChild(div);
+                        });
+                        resultBox.style.display = "block";
+                    } else {
+                        resultBox.innerHTML = "<div style='padding: 10px;'>نتیجه‌ای یافت نشد</div>";
+                        resultBox.style.display = "block";
+                    }
+                });
+        } else {
+            resultBox.style.display = "none";
+        }
+    });
+</script>
+
+
           
 </body>
 
