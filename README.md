@@ -46,7 +46,7 @@ User query ───► Embedding model ─────────┘  (similar
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<username>/<repo>.git
+git clone https://github.com/mmdmaty/django-online-shop-for-university-unit.git
 cd <repo>
 
 # 2. Create a virtual environment
@@ -67,6 +67,6 @@ python manage.py runserver
 To index existing products into the vector database:
 
 ```bash
-python manage.py <your_index_command>
+python manage.py 
 ```
 
